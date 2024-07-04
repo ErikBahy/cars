@@ -1,76 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import HeroSectionComponent from "./HeroSection";
 import CarDisplay from "./CarDisplay";
-
-const PageContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  background-image: url("/assets/rruga.jpeg");
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Heading = styled.h1`
-  font-family: "Poppins", sans-serif;
-  font-size: 3rem;
-  color: #f5f5f5;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-`;
-
-const Subheading = styled.h2`
-  font-family: "Roboto", sans-serif;
-  font-size: 1.5rem;
-  color: #f5f5f5;
-  margin-top: 1rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-`;
-
-const CarContainer = styled(motion.div)`
-  position: absolute;
-  bottom: 20%;
-  cursor: pointer;
-`;
-
-const ArrowButton = styled.button`
-  background: none;
-  backgroundcolor: red;
-  border: none;
-  font-size: 2rem;
-  color: #f5f5f5;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  ${(props) => (props.direction === "left" ? "left: 2rem;" : "right: 2rem;")}
-`;
-
-const carVariants = {
-  enter: (direction) => {
-    return {
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-    };
-  },
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction) => {
-    return {
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-    };
-  },
-};
+import { FaArrowDown } from "react-icons/fa";
+import carBackground from "../assets/rruga.jpeg";
 
 const cars = [
   { id: 1, name: "Sporty Coupe", make: "Speed Motors" },
@@ -79,35 +13,94 @@ const cars = [
   { id: 4, name: "Eco-Friendly Hatchback", make: "Green Wheels" },
 ];
 
-const Car = ({ car, onClick }) => (
-  <CarContainer
-    onClick={onClick}
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.9 }}
-  >
-    {/* Replace this with your actual car image */}
-    <div
-      style={{
-        width: "200px",
-        height: "100px",
-        background: "#FFB100",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {car.image}
-    </div>
-  </CarContainer>
-);
+const PageContainer = styled.div`
+  position: relative;
+  height: 100vh;
+  overflow-y: auto; /* Allow vertical scrolling */
+  display: flex;
+  flex-direction: column;
+`;
+
+const Background = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(${carBackground});
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  opacity: ${(props) => props.opacity};
+  transition: opacity 0.3s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.3s ease;
+  }
+
+  @media (min-width: 768px) {
+    &::before {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  }
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+`;
+
+const PromptText = styled.div`
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 5px 10px;
+  border-radius: 5px;
+`;
+
+const DownArrow = styled.div`
+  text-align: center;
+  font-size: 2em;
+  color: #ffd700;
+  margin-top: 5px; // Adjusted for spacing
+  animation: bounce 2s infinite;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  border-radius: 50%;
+`;
 
 const HomePage = () => {
   const [[page, direction], setPage] = useState([0, 0]);
+  const [opacity, setOpacity] = useState(1);
   const navigate = useNavigate();
 
-  const paginate = (newDirection) => {
-    setPage([page + newDirection, newDirection]);
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const newOpacity = Math.max(1 - scrollY / windowHeight, 0);
+    setOpacity(newOpacity);
   };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const currentCar = cars[Math.abs(page) % cars.length];
 
@@ -116,10 +109,20 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <CarDisplay cars={cars} />
+    <PageContainer>
+      <Background opacity={opacity} />
       <HeroSectionComponent />
-    </div>
+      <ContentWrapper>
+        <PromptText>Click on the car to view details</PromptText>
+        <DownArrow>
+          <FaArrowDown />
+        </DownArrow>
+        <CarDisplay cars={cars} onClick={handleCarClick} />
+        {/* <ExploreButton onClick={() => navigate("/cars")}>
+          Explore Our Cars
+        </ExploreButton> */}
+      </ContentWrapper>
+    </PageContainer>
   );
 };
 

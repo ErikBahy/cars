@@ -2,9 +2,14 @@
 import car from "./assets/bmw.png";
 import m4 from "./assets/bmwM4.png";
 import porche from "./assets/porche.jpeg";
+import a4new from "./assets/a4new.png";
+import a4 from "./assets/a4.png";
+import chevy from "./assets/chevy.jpg";
+import qashqai from "./assets/qaashqai.jpg";
 
 export const cars = [
-  { name: "Toyota Corolla", make: "Toyota", image: car },
-  { name: "Ford Mustang", make: "Ford", image: m4 },
-  { name: "Tesla Model S", make: "Tesla", image: porche },
+  { name: "Audi A4 2013", make: "Audi", image: a4new },
+  { name: "Audi A4", make: "Audi", image: a4 },
+  { name: "Qashqai", make: "Nissan", image: qashqai },
+  { name: "Chevrolet ", make: "Chevrolet", image: chevy },
 ];

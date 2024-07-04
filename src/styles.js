@@ -1,4 +1,3 @@
-// src/styles.js
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
@@ -6,7 +5,7 @@ export const HeroSection = styled.div`
   background: url("assets/rruga.jpeg") no-repeat center center;
   background-size: cover;
   position: relative;
-  height: 100vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,17 +63,16 @@ export const SearchBar = styled.div`
     }
   }
 `;
-
 export const CarDisplayWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   padding: 20px;
-  background-color: #333;
   color: white;
   text-align: center;
   width: 100%;
+  height: auto; /* Change this to fit the content */
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -99,14 +97,14 @@ export const ArrowButton = styled.button`
   &:nth-of-type(1) {
     left: 5%;
     @media (max-width: 768px) {
-      display: none;
+      left: 20px;
     }
   }
 
-  &:nth-of-type(3) {
+  &:nth-of-type(2) {
     right: 5%;
     @media (max-width: 768px) {
-      display: none;
+      right: 20px;
     }
   }
 `;
@@ -114,19 +112,37 @@ export const ArrowButton = styled.button`
 export const CarComponentWrapper = styled(motion.div)`
   text-align: center;
   img {
-    width: 300px;
+    width: 100%;
     height: auto;
+    object-fit: contain;
 
     @media (max-width: 768px) {
-      width: 200px;
+      max-width: 250px; // Mobile size
+    }
+
+    @media (min-width: 769px) {
+      max-width: 400px; // Desktop size
     }
   }
 `;
 
 export const CarInfo = styled.div`
   color: #ffd700;
+  margin-top: 10px; // Adjusted for spacing
 
   @media (max-width: 768px) {
     font-size: 14px;
   }
+`;
+
+export const DownArrow = styled.div`
+  text-align: center;
+  font-size: 2em;
+  color: #ffd700;
+  margin-top: 5px; // Adjusted for spacing
+  animation: bounce 2s infinite;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  border-radius: 50%;
 `;

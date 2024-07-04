@@ -1,4 +1,3 @@
-// src/components/CarDisplay.js
 import React, { useState } from "react";
 import { cars } from "../carData";
 import { CarDisplayWrapper, ArrowButton } from "../styles";
@@ -18,11 +17,15 @@ const CarDisplay = () => {
 
   return (
     <CarDisplayWrapper>
-      <ArrowButton onClick={handlePrev}>‹</ArrowButton>
+      <ArrowButton left onClick={handlePrev}>
+        ‹
+      </ArrowButton>
       <AnimatePresence mode="wait">
         <CarComponent key={cars[currentIndex].name} car={cars[currentIndex]} />
       </AnimatePresence>
-      <ArrowButton onClick={handleNext}>›</ArrowButton>
+      <ArrowButton right onClick={handleNext}>
+        ›
+      </ArrowButton>
     </CarDisplayWrapper>
   );
 };

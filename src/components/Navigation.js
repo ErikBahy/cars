@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSwipeable } from "react-swipeable";
 
 const Nav = styled.nav`
-  background-color: lightblue;
+  background-color: #333; /* Dark color for navbar */
   padding: 1rem;
   position: fixed;
   width: 100%;
@@ -19,6 +20,7 @@ const MenuButton = styled.button`
   background: none;
   border: none;
   font-size: 1.5rem;
+  color: #ffd700; /* Text color */
   text-align: left;
   padding: 0.5rem 0;
   z-index: 1001;
@@ -34,8 +36,8 @@ const CloseButton = styled(motion.button)`
   right: 1rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 2.5rem; /* Increased font size for bigger close button */
+  color: #ffd700; /* Text color */
   cursor: pointer;
   z-index: 1002;
 
@@ -50,7 +52,12 @@ const NavContent = styled(motion.div)`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: lightblue;
+  background-color: rgba(
+    51,
+    51,
+    51,
+    0.6
+  ); /* Dark color for drawer with more transparency */
   backdrop-filter: blur(5px);
   padding: 2rem;
   z-index: 999;
@@ -84,12 +91,17 @@ const NavItem = styled(motion.li)`
 `;
 
 const NavLink = styled(Link)`
-  font-size: 1.2rem;
-  color: #333;
+  font-size: 1.5rem; /* Increased font size for links */
+  color: #ffd700; /* Link color */
   text-decoration: none;
 
   &:hover {
-    color: #007bff;
+    color: #ffd700; /* Hover color */
+  }
+
+  &.active {
+    color: #ffd700; /* Active link color */
+    font-weight: bold;
   }
 `;
 
@@ -129,6 +141,13 @@ const closeButtonVariants = {
 function Navigation({ isOpen, setIsOpen }) {
   const toggleMenu = () => setIsOpen(!isOpen);
   const isMobile = window.innerWidth < 768;
+  const location = useLocation();
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => setIsOpen(false),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
 
   return (
     <Nav>
@@ -136,6 +155,7 @@ function Navigation({ isOpen, setIsOpen }) {
       <AnimatePresence>
         {(isOpen || !isMobile) && (
           <NavContent
+            {...swipeHandlers}
             initial="closed"
             animate="open"
             exit="closed"
@@ -168,6 +188,14 @@ function Navigation({ isOpen, setIsOpen }) {
                         item === "Home"
                           ? "/"
                           : `/${item.toLowerCase().replace(" ", "-")}`
+                      }
+                      className={
+                        location.pathname ===
+                        (item === "Home"
+                          ? "/"
+                          : `/${item.toLowerCase().replace(" ", "-")}`)
+                          ? "active"
+                          : ""
                       }
                       onClick={isMobile ? toggleMenu : undefined}
                     >
