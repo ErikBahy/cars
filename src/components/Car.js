@@ -8,14 +8,13 @@ import carBackground from "../assets/rruga.jpeg"; // Update the path as needed
 const PageContainer = styled.div`
   background: url(${carBackground}) no-repeat center center fixed;
   background-size: cover;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  overflow: hidden;
   position: relative;
-  z-index: 0;
+  overflow-y: auto;
+  height: 100vh; /* Ensure full viewport height */
 
   &::before {
     content: "";
@@ -24,61 +23,45 @@ const PageContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
-    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ffd700;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
   }
 `;
 
 const ContentContainer = styled.div`
-  background: rgba(0, 0, 0, 0.7); /* Darker and slightly transparent */
   width: 60%;
-  height: 100%; /* Full height of the viewport */
-  margin: auto;
-  overflow-y: auto;
-  position: relative;
-  z-index: 2;
+  margin: 20px 0; /* Add margin to ensure content is scrollable */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   border-radius: 10px;
-  padding-bottom: 60px; /* Ensure there's space for the fixed button */
+  // background: rgba(255, 255, 255, 0.1); /* Ensure background for visibility */
+  // backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
     width: 90%;
-    background: rgba(0, 0, 0, 0.7); /* Ensure background on mobile */
-    padding-bottom: 80px; /* Adjust for mobile */
-
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #ffd700;
-      border-radius: 10px;
-      border: 2px solid transparent;
-      background-clip: content-box;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-  }
-
-  @media (min-width: 768px) {
-    background: transparent; /* Remove background on desktop */
-    padding-bottom: 100px; /* More spacing for the Book Now button */
-    ::-webkit-scrollbar {
-      display: none; /* Hide scrollbar on desktop */
-    }
-    -ms-overflow-style: none; /* Hide scrollbar on IE and Edge */
-    scrollbar-width: none; /* Hide scrollbar on Firefox */
   }
 `;
 
 const BookNowButton = styled.button`
   width: 100%;
-  max-width: 600px; /* Match the card width */
+  max-width: 600px;
   background-color: rgba(255, 215, 0, 0.8);
   color: black;
   padding: 15px;
@@ -86,11 +69,11 @@ const BookNowButton = styled.button`
   cursor: pointer;
   font-size: 1.2em;
   font-weight: bold;
-  border-radius: 10px; /* Match the card border radius */
+  border-radius: 10px;
   margin-bottom: 40px;
 
   &:hover {
-    background-color: rgba(230, 194, 0, 0.8); /* Slightly darker on hover */
+    background-color: rgba(230, 194, 0, 0.8);
   }
 
   @media (max-width: 768px) {
@@ -98,7 +81,7 @@ const BookNowButton = styled.button`
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 20px 0; /* Ensure it fills the width */
+    padding: 20px 0;
     margin: 0;
     border-radius: 0;
     z-index: 3;
@@ -222,7 +205,11 @@ const Car = () => {
             ))}
           </ul>
         </Card>
-        <Card removeMarginTop style={{ marginBottom: width < 768 ? 50 : 20 }}>
+        <Card
+          isMobile={width < 768}
+          removeMarginTop
+          style={{ marginBottom: width < 768 ? 90 : 20 }}
+        >
           <h3>Features</h3>
           <ul>
             {features.map((feature, index) => (

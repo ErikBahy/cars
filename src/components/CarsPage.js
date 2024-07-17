@@ -48,7 +48,7 @@ const cars = [
     id: 4,
     name: "Eco-Friendly Hatchback",
     make: "Green Wheels",
-    images: [car, m4, porche, car, m4, porche],
+    images: [car, m4, porche],
     price: 80,
     transmission: "Automatic",
     seating: 5,
@@ -61,9 +61,10 @@ const cars = [
 // Styled Container
 const PageContainer = styled.div`
   position: relative;
-  min-height: 100vh;
+  min-height: 100vh; /* Ensure it takes full viewport height */
   padding: 16px;
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-y: auto; /* Ensure vertical scrolling */
+  z-index: 1; /* Ensure it's above the background */
 `;
 
 const Background = styled.div`
@@ -98,6 +99,7 @@ const Background = styled.div`
 const Heading = styled.h1`
   color: white;
   text-align: center;
+  margin-bottom: 16px;
 `;
 
 const CarsGrid = styled.div`

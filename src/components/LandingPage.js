@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import HeroSectionComponent from "./HeroSection";
 import CarDisplay from "./CarDisplay";
-import { FaArrowDown } from "react-icons/fa";
+import DesktopCarDisplay from "./DesktopCarDisplay";
 import carBackground from "../assets/rruga.jpeg";
-
-const cars = [
-  { id: 1, name: "Sporty Coupe", make: "Speed Motors" },
-  { id: 2, name: "Luxury Sedan", make: "Comfort Cars" },
-  { id: 3, name: "Adventure SUV", make: "Rugged Rides" },
-  { id: 4, name: "Eco-Friendly Hatchback", make: "Green Wheels" },
-];
 
 const PageContainer = styled.div`
   position: relative;
-  height: 100vh;
   overflow-y: auto; /* Allow vertical scrolling */
   display: flex;
   flex-direction: column;
@@ -71,22 +64,36 @@ const PromptText = styled.div`
   border-radius: 5px;
 `;
 
-const DownArrow = styled.div`
-  text-align: center;
-  font-size: 2em;
-  color: #ffd700;
-  margin-top: 5px; // Adjusted for spacing
-  animation: bounce 2s infinite;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-  background: rgba(0, 0, 0, 0.3);
-  padding: 5px;
-  border-radius: 50%;
-`;
-
 const HomePage = () => {
-  const [[page, direction], setPage] = useState([0, 0]);
+  const [cars, setCars] = useState([]);
   const [opacity, setOpacity] = useState(1);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/cars");
+        setCars(response.data);
+      } catch (error) {
+        console.error("Error fetching cars data:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -102,25 +109,25 @@ const HomePage = () => {
     };
   }, []);
 
-  const currentCar = cars[Math.abs(page) % cars.length];
-
-  const handleCarClick = () => {
-    navigate(`/car/${currentCar.id}`);
+  const handleCarClick = (id) => {
+    navigate(`/car/${id}`);
   };
+
+  const favouriteCars = cars.filter(car => car.isFavourite);
 
   return (
     <PageContainer>
       <Background opacity={opacity} />
       <HeroSectionComponent />
       <ContentWrapper>
-        <PromptText>Click on the car to view details</PromptText>
-        <DownArrow>
-          <FaArrowDown />
-        </DownArrow>
-        <CarDisplay cars={cars} onClick={handleCarClick} />
-        {/* <ExploreButton onClick={() => navigate("/cars")}>
-          Explore Our Cars
-        </ExploreButton> */}
+        <PromptText>
+          Our client's most preferred cars. Click on a car to view details
+        </PromptText>
+        {isDesktop ? (
+          <DesktopCarDisplay cars={favouriteCars} onClick={handleCarClick} />
+        ) : (
+          <CarDisplay cars={favouriteCars} onClick={handleCarClick} />
+        )}
       </ContentWrapper>
     </PageContainer>
   );

@@ -19,7 +19,7 @@ const MenuButton = styled.button`
   width: 100%;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #ffd700; /* Text color */
   text-align: left;
   padding: 0.5rem 0;

@@ -2,27 +2,28 @@ import React, { useEffect, useRef } from "react";
 import { CarComponentWrapper, CarInfo } from "../styles";
 import { motion, useAnimation } from "framer-motion";
 
-const carVariants = {
-  hidden: { opacity: 0, x: -200 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-    },
-  },
-};
 
-const CarComponent = ({ car }) => {
+const CarComponent = ({ car,direction }) => {
   const controls = useAnimation();
   const isMounted = useRef(true);
+
+  const carVariants = {
+    hidden: { opacity: 0, x: direction === 'left' ? -200: 200 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+      },
+    },
+  };
 
   useEffect(() => {
     isMounted.current = true;
 
     const bounceAnimation = {
-      y: ["0%", "-10%", "0%", "-2%", "0%", "-1%", "0%", "-1%", "0%", "-1%"],
+      y: ["0%", "-3%", "0%", "-3%", "0%", "-1%", "0%", "-1%", "0%", "-1%"],
       transition: { duration: 2, ease: "easeInOut" },
     };
 
